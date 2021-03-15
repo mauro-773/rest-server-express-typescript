@@ -1,7 +1,5 @@
 import { Router } from 'express';
 
-interface IRoute {
+export interface IRoute {
    router: Router;
 }
-
-export default IRoute;
