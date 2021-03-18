@@ -3,6 +3,7 @@ import { Router } from 'express';
 import UsersController from '../controllers/users.controller';
 import { validationMiddleware } from '../middlewares/validation.middleware';
 import { CreateUserDto } from '../dtos/createUser.dto';
+import { UpdateUserDto } from '../dtos/updateUser.dto';
 import { IRoute } from '../interfaces/routes.interface';
 
 class UserRoute implements IRoute {
@@ -20,9 +21,13 @@ class UserRoute implements IRoute {
          validationMiddleware(CreateUserDto),
          this.usersController.postUser
       );
-      this.router.put('/:id', this.usersController.putUser);
+      this.router.put(
+         '/:userId',
+         validationMiddleware(UpdateUserDto),
+         this.usersController.putUser
+      );
       this.router.patch('/', this.usersController.patchUser);
-      this.router.delete('/', this.usersController.deleteUser);
+      this.router.delete('/:userId', this.usersController.deleteUser);
    }
 }
 

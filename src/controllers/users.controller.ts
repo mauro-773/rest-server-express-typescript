@@ -13,10 +13,18 @@ class UserController {
       next: NextFunction
    ) => {
       try {
-         const users: IUser[] = await this.userService.fetchAllUsers();
+         const { limit = 5, skip = 0 } = req.query;
+
+         const users: IUser[] = await this.userService.fetchAllUsers(
+            Number(limit),
+            Number(skip)
+         );
+         const totalUsers: number = await this.userService.countUsers();
+
          return res.json({
             ok: true,
             users,
+            totalUsers,
          });
       } catch (error) {
          console.log(error);
@@ -31,8 +39,12 @@ class UserController {
    ) => {
       try {
          const { name, email, password, role }: CreateUserDto = req.body;
-         const userData: CreateUserDto = { name, email, password, role };
-         const newUser: IUser = await this.userService.createUser(userData);
+         const newUser: IUser = await this.userService.createUser({
+            name,
+            email,
+            password,
+            role,
+         });
 
          return res.json({
             ok: true,
@@ -45,28 +57,63 @@ class UserController {
       }
    };
 
-   public putUser = (req: Request, res: Response): Response => {
-      const { id } = req.params;
+   public putUser = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { userId } = req.params;
+         const { _id, email, google, ...userData }: IUser = req.body;
+         const userUpdated: IUser | null = await this.userService.updateUser(
+            userId,
+            userData
+         );
 
-      return res.json({
-         ok: true,
-         msg: 'Put users',
-         id,
-      });
+         return res.json({
+            ok: true,
+            msg: 'Usuario actualizado correctamente',
+            userUpdated,
+         });
+      } catch (error) {
+         console.log(error);
+         next(error);
+      }
    };
 
-   public patchUser = (req: Request, res: Response): Response => {
-      return res.json({
-         ok: true,
-         msg: 'Patch users',
-      });
+   public patchUser = async (
+      req: Request,
+      res: Response,
+      next: NextFunction
+   ) => {
+      try {
+         return res.json({
+            ok: true,
+            msg: 'Patch users',
+         });
+      } catch (error) {
+         console.log(error);
+         next(error);
+      }
    };
 
-   public deleteUser = (req: Request, res: Response): Response => {
-      return res.json({
-         ok: true,
-         msg: 'Delete users',
-      });
+   public deleteUser = async (
+      req: Request,
+      res: Response,
+      next: NextFunction
+   ) => {
+      try {
+         const { userId } = req.params;
+
+         const deletedUser: IUser | null = await this.userService.deleteUser(
+            userId
+         );
+
+         return res.json({
+            ok: true,
+            msg: 'Usuario borrado correctamente',
+            deletedUser,
+         });
+      } catch (error) {
+         console.log(error);
+         next(error);
+      }
    };
 }
 

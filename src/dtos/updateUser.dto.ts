@@ -1,6 +1,4 @@
 import {
-   IsBoolean,
-   IsEmail,
    IsEnum,
    IsNotEmpty,
    IsOptional,
@@ -13,13 +11,12 @@ enum enumRoles {
    user_role = 'USER_ROLE',
 }
 
-export class CreateUserDto {
+export class UpdateUserDto {
+   @IsOptional()
    @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
    public name?: string;
 
-   @IsEmail()
-   public email: string;
-
+   @IsOptional()
    @MinLength(6, {
       message: 'La contraseña debe tener un mínimo de 6 carácteres',
    })
@@ -29,15 +26,8 @@ export class CreateUserDto {
    @IsUrl()
    public imageUrl?: string;
 
+   @IsOptional()
    @IsNotEmpty({ message: 'El rol es obligatorio' })
    @IsEnum(enumRoles, { message: 'No es un rol válido' })
    public role?: string;
-
-   @IsOptional()
-   @IsBoolean()
-   public state?: boolean;
-
-   @IsOptional()
-   @IsBoolean()
-   public google?: boolean;
 }

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 import { IUser } from '../interfaces/user.interface';
 
 const UserSchema: Schema = new Schema({
@@ -33,6 +33,11 @@ const UserSchema: Schema = new Schema({
    },
 });
 
-const User = model<IUser>('User', UserSchema);
+/*UserSchema.methods.toJSON = function(){
+   const {__v, password, ...user} = this.toObject()
+   return user
+}*/
+
+const User = model<IUser & Document>('User', UserSchema);
 
 export default User;

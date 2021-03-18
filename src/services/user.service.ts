@@ -1,16 +1,24 @@
-import User from '../models/user.model';
 import bcrypt from 'bcryptjs';
 
+import User from '../models/user.model';
 import HttpException from '../exceptions/httpException';
 import { CreateUserDto } from '../dtos/createUser.dto';
 import { IUser } from '../interfaces/user.interface';
 
 class UserService {
    private User = User;
+   private query = { state: true };
 
-   public async fetchAllUsers(): Promise<IUser[]> {
-      const users: IUser[] = await this.User.find();
+   public async fetchAllUsers(limit: number, skip: number): Promise<IUser[]> {
+      const users: IUser[] = await this.User.find(this.query)
+         .limit(limit)
+         .skip(skip);
       return users;
+   }
+
+   public async countUsers(): Promise<number> {
+      const totalUsers: number = await this.User.countDocuments(this.query);
+      return totalUsers;
    }
 
    public async createUser(userData: CreateUserDto): Promise<IUser> {
@@ -18,18 +26,50 @@ class UserService {
          email: userData.email,
       });
 
-      if (findUser) {
-         throw new HttpException(
-            400,
-            `El usuario ${userData.email} ya está registrado`
-         );
-      }
+      if (findUser)
+         throw new HttpException(400, `El usuario ya está registrado`);
 
       const salt: string = bcrypt.genSaltSync();
       const hashedPassword: string = bcrypt.hashSync(userData.password, salt);
       const newUser = new User({ ...userData, password: hashedPassword });
 
       return await newUser.save();
+   }
+
+   public async updateUser(
+      userId: string,
+      userData: IUser
+   ): Promise<IUser | null> {
+      const findUser: IUser | null = await this.User.findById(userId);
+      if (!findUser) throw new HttpException(404, `El usuario no existe`);
+
+      if (userData.password) {
+         const salt: string = bcrypt.genSaltSync();
+         const hashedPassword: string = bcrypt.hashSync(
+            userData.password,
+            salt
+         );
+         userData.password = hashedPassword;
+      }
+
+      const userUpdated: IUser | null = await this.User.findByIdAndUpdate(
+         userId,
+         userData,
+         { new: true }
+      );
+
+      return userUpdated;
+   }
+
+   public async deleteUser(userId: string): Promise<IUser | null> {
+      const findUser: IUser | null = await this.User.findById(userId);
+      if (!findUser) throw new HttpException(404, `El usuario no existe`);
+
+      const deletedUser: IUser | null = await this.User.findByIdAndUpdate(
+         userId,
+         { state: false }
+      );
+      return deletedUser;
    }
 }
 
