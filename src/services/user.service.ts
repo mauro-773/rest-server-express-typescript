@@ -2,7 +2,7 @@ import bcrypt from 'bcryptjs';
 
 import User from '../models/user.model';
 import HttpException from '../exceptions/httpException';
-import { CreateUserDto } from '../dtos/createUser.dto';
+import { CreateUserDto } from '../dtos';
 import { IUser } from '../interfaces/user.interface';
 
 class UserService {
@@ -64,6 +64,8 @@ class UserService {
    public async deleteUser(userId: string): Promise<IUser | null> {
       const findUser: IUser | null = await this.User.findById(userId);
       if (!findUser) throw new HttpException(404, `El usuario no existe`);
+      if (!findUser.state)
+         throw new HttpException(401, 'El usuario ya fue borrado');
 
       const deletedUser: IUser | null = await this.User.findByIdAndUpdate(
          userId,

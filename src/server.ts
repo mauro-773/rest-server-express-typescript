@@ -3,7 +3,8 @@ import cors from 'cors';
 
 import UsersRoute from './routes/users.route';
 import { dbConnection } from './database';
-import { errorMiddleware } from './middlewares/error.middleware';
+import { errorMiddleware } from './middlewares';
+import AuthRoute from './routes/auth.route';
 
 class Server {
    private app: Application;
@@ -29,6 +30,7 @@ class Server {
 
    private initializeRoutes() {
       this.app.use('/api/users', new UsersRoute().router);
+      this.app.use('/api/auth', new AuthRoute().router);
    }
 
    initializeServer() {

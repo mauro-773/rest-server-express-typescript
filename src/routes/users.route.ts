@@ -1,9 +1,12 @@
 import { Router } from 'express';
 
 import UsersController from '../controllers/users.controller';
-import { validationMiddleware } from '../middlewares/validation.middleware';
-import { CreateUserDto } from '../dtos/createUser.dto';
-import { UpdateUserDto } from '../dtos/updateUser.dto';
+import {
+   validationMiddleware,
+   verifyJwtMiddleware,
+   isAdminMiddleware,
+} from '../middlewares';
+import { CreateUserDto, UpdateUserDto } from '../dtos';
 import { IRoute } from '../interfaces/routes.interface';
 
 class UserRoute implements IRoute {
@@ -26,8 +29,11 @@ class UserRoute implements IRoute {
          validationMiddleware(UpdateUserDto),
          this.usersController.putUser
       );
-      this.router.patch('/', this.usersController.patchUser);
-      this.router.delete('/:userId', this.usersController.deleteUser);
+      this.router.delete(
+         '/:userId',
+         [verifyJwtMiddleware, isAdminMiddleware],
+         this.usersController.deleteUser
+      );
    }
 }
 
