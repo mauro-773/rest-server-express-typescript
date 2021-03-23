@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Rest Server - Express & Typescript</title>
+      <meta
+         name="google-signin-client_id"
+         content="695537504226-rvc917p1h5micr76hnl23uaeeksffhfr.apps.googleusercontent.com"
+      />
+   </head>
+   <body>
+      <h1>Google Sign-In</h1>
+
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
+      <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+      <a href="#" onclick="signOut();">Sign out</a>
+
+      <script>
+         const url = window.location.hostname.includes('localhost')
+            ? 'http://localhost:8080/api/auth/google'
+            : 'http://localhost:8080/api/auth/google';
+
+         function onSignIn(googleUser) {
+            const profile = googleUser.getBasicProfile();
+            /*
+            console.log('ID: ' + profile.getId());
+            console.log('Name: ' + profile.getName());
+            console.log('ImageUrl: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail());
+            */
+            const id_token = googleUser.getAuthResponse().id_token;
+            const data = { id_token };
+            //console.log(id_token);
+
+            fetch(url, {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify(data),
+            })
+               .then((result) => result.json())
+               .then((data) => console.log(data));
+         }
+
+         function signOut() {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+               console.log('User signed out');
+            });
+         }
+      </script>
+   </body>
+</html>

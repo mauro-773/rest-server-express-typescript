@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
+import AuthController from '../controllers/auth.controller';
 import { validationMiddleware } from '../middlewares';
 import { LoginUserDto } from '../dtos';
 import { IRoute } from '../interfaces/routes.interface';
-import AuthController from '../controllers/auth.controller';
 
 class AuthRoute implements IRoute {
    public router = Router();
@@ -19,6 +19,8 @@ class AuthRoute implements IRoute {
          validationMiddleware(LoginUserDto),
          this.authController.login
       );
+
+      this.router.post('/google', this.authController.googleSignIn);
    }
 }
 
