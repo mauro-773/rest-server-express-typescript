@@ -3,6 +3,7 @@ import { OAuth2Client } from 'google-auth-library';
 
 import User from '../models/user.model';
 import HttpException from '../exceptions/httpException';
+
 import { IUser } from '../interfaces/user.interface';
 import { generateJWT } from '../utils/jsonWebToken';
 import {

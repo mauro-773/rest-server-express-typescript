@@ -3,7 +3,7 @@ import { TokenPayload } from 'google-auth-library';
 import { IUser } from './user.interface';
 
 export interface RequestWithUid extends Request {
-   uid?: IUser['_id'];
+   uid?: string;
 }
 
 export interface DataStoredInToken {

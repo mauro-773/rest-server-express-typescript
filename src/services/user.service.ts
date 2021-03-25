@@ -2,8 +2,10 @@ import bcrypt from 'bcryptjs';
 
 import User from '../models/user.model';
 import HttpException from '../exceptions/httpException';
+
 import { CreateUserDto } from '../dtos';
 import { IUser } from '../interfaces/user.interface';
+import { GoogleSignIn } from '../interfaces/auth.interface';
 
 class UserService {
    private User = User;
@@ -72,6 +74,28 @@ class UserService {
          { state: false }
       );
       return deletedUser;
+   }
+
+   public async createGoogleUser(userGoogleData: GoogleSignIn): Promise<IUser> {
+      const { email, name, imageUrl } = userGoogleData;
+      let user = (await User.findOne({ email })) as IUser;
+
+      if (!user) {
+         const userData: CreateUserDto = {
+            email,
+            name,
+            imageUrl,
+            password: ':)',
+            google: true,
+            role: 'USER_ROLE',
+         };
+         user = await this.createUser(userData);
+      }
+
+      if (!user.state)
+         throw new HttpException(403, 'El usuario está bloqueado!');
+
+      return user;
    }
 }
 
