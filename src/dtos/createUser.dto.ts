@@ -15,7 +15,7 @@ enum enumRoles {
 
 export class CreateUserDto {
    @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
-   public name?: string;
+   public name: string;
 
    @IsEmail()
    public email: string;

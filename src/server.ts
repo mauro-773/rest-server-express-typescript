@@ -2,8 +2,10 @@ import express, { Application } from 'express';
 import cors from 'cors';
 
 import AuthRoute from './routes/auth.route';
+import FindRoute from './routes/find.route';
 import CategoriesRoute from './routes/categories.route';
 import UsersRoute from './routes/users.route';
+import ProductsRoute from './routes/products.route';
 
 import { dbConnection } from './database';
 import { errorMiddleware } from './middlewares';
@@ -11,6 +13,13 @@ import { errorMiddleware } from './middlewares';
 class Server {
    private app: Application;
    private port: string;
+   private paths = {
+      auth: '/api/auth',
+      find: '/api/find',
+      categories: '/api/categories',
+      users: '/api/users',
+      products: '/api/products',
+   };
 
    constructor() {
       this.app = express();
@@ -32,9 +41,11 @@ class Server {
    }
 
    private initializeRoutes() {
-      this.app.use('/api/auth', new AuthRoute().router);
-      this.app.use('/api/categories', new CategoriesRoute().router);
-      this.app.use('/api/users', new UsersRoute().router);
+      this.app.use(this.paths.auth, new AuthRoute().router);
+      this.app.use(this.paths.find, new FindRoute().router);
+      this.app.use(this.paths.categories, new CategoriesRoute().router);
+      this.app.use(this.paths.users, new UsersRoute().router);
+      this.app.use(this.paths.products, new ProductsRoute().router);
    }
 
    initializeServer() {

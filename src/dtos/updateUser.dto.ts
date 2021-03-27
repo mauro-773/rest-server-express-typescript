@@ -14,7 +14,7 @@ enum enumRoles {
 export class UpdateUserDto {
    @IsOptional()
    @IsNotEmpty({ message: 'El nombre no puede estar vacío' })
-   public name?: string;
+   public name: string;
 
    @IsOptional()
    @MinLength(6, {
@@ -24,10 +24,10 @@ export class UpdateUserDto {
 
    @IsOptional()
    @IsUrl()
-   public imageUrl?: string;
+   public imageUrl: string;
 
    @IsOptional()
    @IsNotEmpty({ message: 'El rol es obligatorio' })
    @IsEnum(enumRoles, { message: 'No es un rol válido' })
-   public role?: string;
+   public role: string;
 }

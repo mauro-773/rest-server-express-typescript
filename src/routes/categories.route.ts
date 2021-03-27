@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 import CategoriesController from '../controllers/categories.controller';
-import { CreateCategoryDto } from '../dtos/createCategory.dto';
 
+import { CreateCategoryDto } from '../dtos';
 import { IRoute } from '../interfaces/routes.interface';
 import {
    verifyJwtMiddleware,
