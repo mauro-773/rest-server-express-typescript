@@ -8,7 +8,7 @@ export const errorMiddleware = (
    next: NextFunction
 ) => {
    const status: number = error.statusCode || 500;
-   const message: string = error.message || 'Something went wrong';
+   const message: string = error.message || 'Algo salió mal';
 
    return res.status(status).json({ ok: false, message });
 };

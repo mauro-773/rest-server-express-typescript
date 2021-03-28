@@ -10,7 +10,7 @@ import { ICategory } from '../interfaces/categories.interface';
 import { IUser } from '../interfaces/user.interface';
 
 class FindService {
-   private collections = ['users', 'categories', 'products'];
+   private collections: string[] = ['users', 'categories', 'products'];
 
    public async findByCollection(collection: string, term: string) {
       if (!this.collections.includes(collection)) {
