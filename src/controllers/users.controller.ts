@@ -61,7 +61,7 @@ class UserController {
       try {
          const { userId } = req.params;
          const { _id, email, google, ...userData }: IUser = req.body;
-         const userUpdated: IUser | null = await this.userService.updateUser(
+         const userUpdated: IUser = await this.userService.updateUser(
             userId,
             userData
          );
@@ -101,9 +101,7 @@ class UserController {
       try {
          const { userId } = req.params;
 
-         const deletedUser: IUser | null = await this.userService.deleteUser(
-            userId
-         );
+         const deletedUser: IUser = await this.userService.deleteUser(userId);
 
          return res.json({
             ok: true,

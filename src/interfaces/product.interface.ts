@@ -9,4 +9,5 @@ export interface IProduct {
    category: ICategory;
    desc: string;
    available: boolean;
+   imageUrl: string;
 }

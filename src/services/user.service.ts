@@ -38,11 +38,8 @@ class UserService {
       return await newUser.save();
    }
 
-   public async updateUser(
-      userId: string,
-      userData: IUser
-   ): Promise<IUser | null> {
-      const findUser: IUser | null = await this.User.findById(userId);
+   public async updateUser(userId: string, userData: IUser): Promise<IUser> {
+      const findUser = (await this.User.findById(userId)) as IUser;
       if (!findUser) throw new HttpException(404, `El usuario no existe`);
 
       if (userData.password) {
@@ -54,25 +51,22 @@ class UserService {
          userData.password = hashedPassword;
       }
 
-      const userUpdated: IUser | null = await this.User.findByIdAndUpdate(
-         userId,
-         userData,
-         { new: true }
-      );
+      const userUpdated = (await this.User.findByIdAndUpdate(userId, userData, {
+         new: true,
+      })) as IUser;
 
       return userUpdated;
    }
 
-   public async deleteUser(userId: string): Promise<IUser | null> {
-      const findUser: IUser | null = await this.User.findById(userId);
+   public async deleteUser(userId: string): Promise<IUser> {
+      const findUser = (await this.User.findById(userId)) as IUser;
       if (!findUser) throw new HttpException(404, `El usuario no existe`);
       if (!findUser.state)
          throw new HttpException(401, 'El usuario ya fue borrado');
 
-      const deletedUser: IUser | null = await this.User.findByIdAndUpdate(
-         userId,
-         { state: false }
-      );
+      const deletedUser = (await this.User.findByIdAndUpdate(userId, {
+         new: true,
+      })) as IUser;
       return deletedUser;
    }
 

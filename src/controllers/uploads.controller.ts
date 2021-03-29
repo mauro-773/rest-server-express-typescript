@@ -12,14 +12,7 @@ class UploadsController {
       next: NextFunction
    ) => {
       try {
-         if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).json({
-               ok: false,
-               msg: 'No hay archivos para subir',
-            });
-         }
-
-         const file = req.files.foo as UploadedFile;
+         const file = req.files?.foo as UploadedFile;
 
          //const allowedExtensions: string[] = ['txt', 'md'];
          const folderName: string = 'images';
@@ -34,6 +27,40 @@ class UploadsController {
             msg: 'El archivo se subió correctamente',
             fileName,
          });
+      } catch (error) {
+         console.log(error);
+         next(error);
+      }
+   };
+
+   public updateImage = async (
+      req: Request,
+      res: Response,
+      next: NextFunction
+   ) => {
+      try {
+         const file = req.files?.foo as UploadedFile;
+
+         const { collection, id } = req.params;
+         const result = await this.uploadService.changeImage(
+            collection,
+            id,
+            file
+         );
+
+         res.json({ ok: true, result });
+      } catch (error) {
+         console.log(error);
+         next(error);
+      }
+   };
+
+   public getFile = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+         const { collection, id } = req.params;
+         const imagePath = await this.uploadService.getFile(collection, id);
+
+         res.sendFile(imagePath);
       } catch (error) {
          console.log(error);
          next(error);

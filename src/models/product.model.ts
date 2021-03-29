@@ -33,6 +33,9 @@ const ProductSchema: Schema = new Schema({
       type: Boolean,
       default: true,
    },
+   imageUrl: {
+      type: String,
+   },
 });
 
 const Product = model<IProduct & Document>('Product', ProductSchema);
